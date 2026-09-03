@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ADMIN - CHAT HỖ TRỢ</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+    font-family:Arial,sans-serif;
+    background:#050b0f;
+    color:#fff;
+    height:100vh;
+    overflow:hidden
+}
+button,input{font-family:inherit}
+
+#loginPage{
+    width:100%;
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    background:radial-gradient(circle,#06343d,#03171c 40%,#050b0f 80%)
+}
+
+.loginBox{
+    width:100%;
+    max-width:420px;
+    padding:35px 25px;
+    text-align:center;
+    background:#061217;
+    border:1px solid #00eaff;
+    border-radius:24px;
+    box-shadow:0 0 30px rgba(0,234,255,.25)
+}
+
+.loginIcon{
+    width:85px;
+    height:85px;
+    margin:0 auto 20px;
+    border:2px solid #00eaff;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:40px
+}
+
+.loginBox h1{
+    color:#00eaff;
+    font-size:24px;
+    margin-bottom:8px
+}
+
+.loginBox p{
+    color:#78969d;
+    font-size:13px;
+    margin-bottom:24px
+}
+
+.loginBox input{
+    width:100%;
+    height:50px;
+    padding:0 14px;
+    background:#091a20;
+    border:1px solid #173d45;
+    border-radius:11px;
+    outline:none;
+    color:#fff;
+    margin-bottom:12px
+}
+
+.loginBox input:focus{border-color:#00eaff}
+
+.loginBox button{
+    width:100%;
+    height:50px;
+    border:0;
+    border-radius:11px;
+    background:#00eaff;
+    color:#001014;
+    font-weight:bold;
+    cursor:pointer
+}
+
+#errorLogin{
+    color:#ff5555;
+    min-height:20px;
+    margin-top:10px;
+    font-size:13px
+}
+
+#adminPage{
+    display:none;
+    width:100%;
+    height:100vh
+}
+
+.adminHeader{
+    height:65px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 18px;
+    background:#061217;
+    border-bottom:1px solid #12343b
+}
+
+.adminTitle{
+    display:flex;
+    align-items:center;
+    gap:12px
+}
+
+.adminIcon{
+    width:40px;
+    height:40px;
+    border:1px solid #00eaff;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center
+}
+
+.adminTitle h2{
+    color:#00eaff;
+    font-size:16px
+}
+
+.adminTitle small{
+    color:#6d8990;
+    font-size:10px
+}
+
+#logoutBtn{
+    background:transparent;
+    border:1px solid #ff4e4e;
+    color:#ff6666;
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer
+}
+
+.adminBody{
+    height:calc(100vh - 65px);
+    display:flex
+}
+
+.playersPanel{
+    width:330px;
+    min-width:330px;
+    background:#061116;
+    border-right:1px solid #12343b;
+    display:flex;
+    flex-direction:column
+}
+
+.playersTop{
+    padding:15px;
+    border-bottom:1px solid #12343b
+}
+
+.playersTop h3{
+    color:#00eaff;
+    font-size:15px;
+    margin-bottom:5px
+}
+
+.playersTop span{
+    color:#78959c;
+    font-size:11px
+}
+
+#playerSearch{
+    width:100%;
+    height:40px;
+    margin-top:12px;
+    padding:0 12px;
+    background:#091a20;
+    border:1px solid #173b43;
+    border-radius:9px;
+    color:#fff;
+    outline:none
+}
+
+#playersList{
+    flex:1;
+    overflow-y:auto
+}
+
+.playerItem{
+    padding:14px;
+    border-bottom:1px solid #102b31;
+    cursor:pointer
+}
+
+.playerItem:hover{background:#092128}
+
+.playerItem.active{
+    background:#08313a;
+    border-left:3px solid #00eaff
+}
+
+.playerName{
+    font-weight:bold;
+    font-size:14px
+}
+
+.playerId{
+    color:#00eaff;
+    font-size:10px;
+    margin-top:5px;
+    word-break:break-all
+}
+
+.playerLast{
+    color:#7f9aa0;
+    font-size:11px;
+    margin-top:6px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis
+}
+
+.playerTime{
+    color:#526d73;
+    font-size:10px;
+    margin-top:5px
+}
+
+.playerBanned{
+    color:#ff6666;
+    font-size:10px;
+    margin-top:5px;
+    font-weight:bold
+}
+
+.chatPanel{
+    flex:1;
+    min-width:0;
+    display:flex;
+    flex-direction:column
+}
+
+.chatHeader{
+    min-height:70px;
+    padding:12px 18px;
+    background:#061217;
+    border-bottom:1px solid #12343b;
+    display:flex;
+    align-items:center;
+    gap:12px
+}
+
+#mobileBack{
+    display:none;
+    background:transparent;
+    border:1px solid #00eaff;
+    color:#00eaff;
+    border-radius:8px;
+    padding:7px 10px
+}
+
+.selectedName{
+    font-size:16px;
+    font-weight:bold
+}
+
+.selectedId{
+    color:#00eaff;
+    font-size:10px;
+    margin-top:5px;
+    word-break:break-all
+}
+
+.banStatus{
+    margin-left:auto;
+    text-align:right
+}
+
+#banStatusText{
+    color:#ff6666;
+    font-size:11px;
+    font-weight:bold
+}
+
+.chatMessages{
+    flex:1;
+    overflow-y:auto;
+    padding:20px;
+    background:#040b0e
+}
+
+.emptyChat{
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    color:#526c72;
+    text-align:center
+}
+
+.emptyIcon{
+    font-size:45px;
+    margin-bottom:12px
+}
+
+.messageRow{
+    display:flex;
+    margin-bottom:14px
+}
+
+.messageRow.player{justify-content:flex-start}
+.messageRow.admin{justify-content:flex-end}
+
+.messageBubble{
+    max-width:min(75%,600px);
+    padding:11px 14px;
+    border-radius:15px;
+    line-height:1.45;
+    word-break:break-word
+}
+
+.messageRow.player .messageBubble{
+    background:#10262c;
+    border:1px solid #1b4149;
+    border-bottom-left-radius:4px
+}
+
+.messageRow.admin .messageBubble{
+    background:#004b57;
+    border:1px solid #00aabd;
+    border-bottom-right-radius:4px
+}
+
+.messageSender{
+    color:#00eaff;
+    font-size:10px;
+    font-weight:bold;
+    margin-bottom:4px
+}
+
+.messageText{
+    white-space:pre-wrap;
+    font-size:14px
+}
+
+.messageTime{
+    color:#719098;
+    font-size:9px;
+    margin-top:5px
+}
+
+.replyArea{
+    padding:12px;
+    background:#061217;
+    border-top:1px solid #12343b
+}
+
+.commandHint{
+    color:#617e85;
+    font-size:10px;
+    margin-bottom:8px
+}
+
+.commandHint b{color:#00eaff}
+
+.replyBox{
+    display:flex;
+    gap:9px
+}
+
+#replyInput{
+    flex:1;
+    height:48px;
+    min-width:0;
+    background:#091a20;
+    border:1px solid #173b43;
+    border-radius:11px;
+    outline:none;
+    color:#fff;
+    padding:0 14px
+}
+
+#replyInput:focus{border-color:#00eaff}
+
+#replyBtn{
+    width:90px;
+    border:0;
+    border-radius:11px;
+    background:#00eaff;
+    color:#001014;
+    font-weight:bold;
+    cursor:pointer
+}
+
+#replyBtn:disabled{
+    opacity:.5;
+    cursor:not-allowed
+}
+
+.statusBar{
+    position:fixed;
+    right:15px;
+    bottom:80px;
+    display:none;
+    padding:9px 13px;
+    border-radius:9px;
+    background:#07191e;
+    border:1px solid #17434b;
+    font-size:11px;
+    z-index:100
+}
+
+.statusBar.show{display:block}
+.statusBar.ok{
+    color:#00ff9d;
+    border-color:#00a86b
+}
+.statusBar.error{
+    color:#ff6666;
+    border-color:#b52f2f
+}
+
+@media(max-width:750px){
+    .playersPanel{
+        width:100%;
+        min-width:0
+    }
+
+    .chatPanel{display:none}
+
+    .adminBody.chatOpen .playersPanel{display:none}
+    .adminBody.chatOpen .chatPanel{display:flex}
+
+    #mobileBack{display:block}
+
+    .messageBubble{max-width:88%}
+
+    .banStatus{display:none}
+}
+</style>
+</head>
+
+<body>
+
+<div id="loginPage">
+
+    <div class="loginBox">
+
+        <div class="loginIcon">🤖</div>
+
+        <h1>ADMIN PANEL</h1>
+
+        <p>CHAT HỖ TRỢ / ADMIN TRẢ LỜI</p>
+
+        <input
+            id="adminPassword"
+            type="password"
+            placeholder="🔐 Nhập mật khẩu Admin..."
+            autocomplete="off"
+        >
+
+        <button id="loginBtn">ĐĂNG NHẬP</button>
+
+        <div id="errorLogin"></div>
+
+    </div>
+
+</div>
+
+
+<div id="adminPage">
+
+    <div class="adminHeader">
+
+        <div class="adminTitle">
+
+            <div class="adminIcon">🤖</div>
+
+            <div>
+                <h2>CHAT HỖ TRỢ / ADMIN TRẢ LỜI</h2>
+                <small>QUẢN LÝ NGƯỜI CHƠI REALTIME</small>
+            </div>
+
+        </div>
+
+        <button id="logoutBtn">ĐĂNG XUẤT</button>
+
+    </div>
+
+
+    <div class="adminBody" id="adminBody">
+
+        <div class="playersPanel">
+
+            <div class="playersTop">
+
+                <h3>👥 NGƯỜI CHƠI</h3>
+
+                <span id="playerCount">0 người chơi</span>
+
+                <input
+                    id="playerSearch"
+                    placeholder="🔎 Tìm tên hoặc Player ID..."
+                >
+
+            </div>
+
+            <div id="playersList"></div>
+
+        </div>
+
+
+        <div class="chatPanel">
+
+            <div class="chatHeader">
+
+                <button id="mobileBack">←</button>
+
+                <div>
+
+                    <div
+                        class="selectedName"
+                        id="selectedName"
+                    >
+                        Chưa chọn người chơi
+                    </div>
+
+                    <div
+                        class="selectedId"
+                        id="selectedId"
+                    ></div>
+
+                </div>
+
+                <div class="banStatus">
+                    <div id="banStatusText"></div>
+                </div>
+
+            </div>
+
+
+            <div
+                id="chatMessages"
+                class="chatMessages"
+            >
+
+                <div class="emptyChat">
+                    <div class="emptyIcon">💬</div>
+                    Chọn người chơi để xem tin nhắn
+                </div>
+
+            </div>
+
+
+            <div class="replyArea">
+
+                <div class="commandHint">
+                    Lệnh Admin:
+                    <b>/10s</b> = cấm 10 giây
+                    &nbsp;|&nbsp;
+                    <b>/cam</b> = cấm 1 phút
+                </div>
+
+                <div class="replyBox">
+
+                    <input
+                        id="replyInput"
+                        placeholder="💬 Nhập trả lời hoặc lệnh Admin..."
+                        maxlength="500"
+                        disabled
+                    >
+
+                    <button
+                        id="replyBtn"
+                        disabled
+                    >
+                        GỬI
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div id="statusBar" class="statusBar"></div>
+
+
+<script type="module">
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+    getFirestore,
+    collection,
+    addDoc,
+    setDoc,
+    doc,
+    query,
+    where,
+    onSnapshot,
+    limit,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDUzh9rJblwABf_v-S9JZAkrVZKEsT-WOU",
+    authDomain: "phune-31284.firebaseapp.com",
+    projectId: "phune-31284",
+    storageBucket: "phune-31284.firebasestorage.app",
+    messagingSenderId: "395938850354",
+    appId: "1:395938850354:web:3f99d9c17343604739be2b",
+    measurementId: "G-BDDQJW8MEL"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const supportRef =
+    collection(db,"supportMessages");
+
+const banRef =
+    collection(db,"chatBans");
+
+
+const ADMIN_PASSWORD =
+    "ADMINBANGKMLVIPMK";
+
+const LOGIN_KEY =
+    "cbang_admin_support_login";
+
+
+const loginPage =
+    document.getElementById("loginPage");
+
+const adminPage =
+    document.getElementById("adminPage");
+
+const adminPassword =
+    document.getElementById("adminPassword");
+
+const loginBtn =
+    document.getElementById("loginBtn");
+
+const errorLogin =
+    document.getElementById("errorLogin");
+
+const logoutBtn =
+    document.getElementById("logoutBtn");
+
+const playersList =
+    document.getElementById("playersList");
+
+const playerCount =
+    document.getElementById("playerCount");
+
+const playerSearch =
+    document.getElementById("playerSearch");
+
+const selectedName =
+    document.getElementById("selectedName");
+
+const selectedId =
+    document.getElementById("selectedId");
+
+const chatMessages =
+    document.getElementById("chatMessages");
+
+const replyInput =
+    document.getElementById("replyInput");
+
+const replyBtn =
+    document.getElementById("replyBtn");
+
+const adminBody =
+    document.getElementById("adminBody");
+
+const mobileBack =
+    document.getElementById("mobileBack");
+
+const banStatusText =
+    document.getElementById("banStatusText");
+
+const statusBar =
+    document.getElementById("statusBar");
+
+
+let allPlayers = [];
+
+let selectedPlayerId = null;
+
+let selectedPlayerName = "";
+
+let unsubscribePlayers = null;
+
+let unsubscribeChat = null;
+
+let unsubscribeBan = null;
+
+let currentBanUntil = 0;
+
+let banTimer = null;
+
+let statusTimer = null;
+
+
+function escapeHTML(value){
+
+    if(value === null ||
+       value === undefined){
+        return "";
+    }
+
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+
+function getMillis(timestamp){
+
+    if(!timestamp){
+        return 0;
+    }
+
+    try{
+
+        if(typeof timestamp.toMillis === "function"){
+            return timestamp.toMillis();
+        }
+
+        if(typeof timestamp.toDate === "function"){
+            return timestamp.toDate().getTime();
+        }
+
+    }catch(e){}
+
+    return 0;
+}
+
+
+function formatTime(timestamp){
+
+    const ms = getMillis(timestamp);
+
+    if(!ms){
+        return "Đang gửi...";
+    }
+
+    return new Date(ms).toLocaleString(
+        "vi-VN",
+        {
+            day:"2-digit",
+            month:"2-digit",
+            year:"numeric",
+            hour:"2-digit",
+            minute:"2-digit"
+        }
+    );
+}
+
+
+function showStatus(text,type=""){
+
+    statusBar.textContent = text;
+
+    statusBar.className =
+        "statusBar show " + type;
+
+    clearTimeout(statusTimer);
+
+    statusTimer = setTimeout(
+        ()=>{
+            statusBar.className =
+                "statusBar";
+        },
+        2500
+    );
+}
+
+
+function login(){
+
+    if(adminPassword.value === ADMIN_PASSWORD){
+
+        sessionStorage.setItem(
+            LOGIN_KEY,
+            "true"
+        );
+
+        errorLogin.textContent = "";
+
+        showAdmin();
+
+    }else{
+
+        errorLogin.textContent =
+            "❌ Mật khẩu Admin không đúng!";
+
+        adminPassword.value = "";
+
+        adminPassword.focus();
+    }
+}
+
+
+function showAdmin(){
+
+    loginPage.style.display = "none";
+    adminPage.style.display = "block";
+
+    startPlayersListener();
+}
+
+
+function logout(){
+
+    sessionStorage.removeItem(LOGIN_KEY);
+
+    if(unsubscribePlayers){
+        unsubscribePlayers();
+    }
+
+    if(unsubscribeChat){
+        unsubscribeChat();
+    }
+
+    if(unsubscribeBan){
+        unsubscribeBan();
+    }
+
+    unsubscribePlayers = null;
+    unsubscribeChat = null;
+    unsubscribeBan = null;
+
+    clearInterval(banTimer);
+
+    selectedPlayerId = null;
+
+    adminPage.style.display = "none";
+    loginPage.style.display = "flex";
+}
+
+
+loginBtn.addEventListener("click",login);
+
+adminPassword.addEventListener(
+    "keydown",
+    e=>{
+        if(e.key === "Enter"){
+            login();
+        }
+    }
+);
+
+logoutBtn.addEventListener("click",logout);
+
+
+function startPlayersListener(){
+
+    if(unsubscribePlayers){
+        unsubscribePlayers();
+    }
+
+    const q = query(
+        supportRef,
+        limit(1000)
+    );
+
+    unsubscribePlayers = onSnapshot(
+        q,
+        snapshot=>{
+
+            const map = new Map();
+
+            snapshot.forEach(
+                item=>{
+
+                    const data = item.data();
+
+                    if(!data.playerId){
+                        return;
+                    }
+
+                    const old =
+                        map.get(data.playerId);
+
+                    if(
+                        !old ||
+                        getMillis(data.createdAt) >
+                        getMillis(old.createdAt)
+                    ){
+
+                        map.set(
+                            data.playerId,
+                            {
+                                ...data,
+                                docId:item.id
+                            }
+                        );
+                    }
+                }
+            );
+
+            allPlayers =
+                Array.from(map.values());
+
+            allPlayers.sort(
+                (a,b)=>
+                    getMillis(b.createdAt) -
+                    getMillis(a.createdAt)
+            );
+
+            renderPlayers();
+        },
+        error=>{
+            console.error(error);
+
+            showStatus(
+                "❌ Không thể tải người chơi",
+                "error"
+            );
+        }
+    );
+}
+
+
+function renderPlayers(){
+
+    const keyword =
+        playerSearch.value
+            .trim()
+            .toLowerCase();
+
+    const filtered =
+        allPlayers.filter(
+            p=>{
+
+                const name =
+                    (p.playerName || "")
+                    .toLowerCase();
+
+                const id =
+                    (p.playerId || "")
+                    .toLowerCase();
+
+                return (
+                    !keyword ||
+                    name.includes(keyword) ||
+                    id.includes(keyword)
+                );
+            }
+        );
+
+    playerCount.textContent =
+        allPlayers.length +
+        " người chơi";
+
+    if(filtered.length === 0){
+
+        playersList.innerHTML = `
+            <div class="emptyChat">
+                <div class="emptyIcon">👥</div>
+                Chưa có người chơi
+            </div>
+        `;
+
+        return;
+    }
+
+    playersList.innerHTML =
+        filtered.map(
+            player=>{
+
+                const active =
+                    player.playerId ===
+                    selectedPlayerId
+                    ? "active"
+                    : "";
+
+                const name =
+                    escapeHTML(
+                        player.playerName ||
+                        "Người chơi"
+                    );
+
+                const id =
+                    escapeHTML(
+                        player.playerId
+                    );
+
+                const last =
+                    escapeHTML(
+                        player.text || ""
+                    );
+
+                const time =
+                    formatTime(
+                        player.createdAt
+                    );
+
+                return `
+                    <div
+                        class="playerItem ${active}"
+                        data-player-id="${id}"
+                    >
+
+                        <div class="playerName">
+                            ${name}
+                        </div>
+
+                        <div class="playerId">
+                            ${id}
+                        </div>
+
+                        <div class="playerLast">
+                            ${last}
+                        </div>
+
+                        <div class="playerTime">
+                            ${time}
+                        </div>
+
+                    </div>
+                `;
+            }
+        ).join("");
+
+    document
+        .querySelectorAll(".playerItem")
+        .forEach(item=>{
+
+            item.addEventListener(
+                "click",
+                ()=>{
+                    selectPlayer(
+                        item.dataset.playerId
+                    );
+                }
+            );
+
+        });
+}
+
+
+function selectPlayer(playerId){
+
+    selectedPlayerId =
+        playerId;
+
+    const player =
+        allPlayers.find(
+            p=>p.playerId === playerId
+        );
+
+    selectedPlayerName =
+        player?.playerName ||
+        "Người chơi";
+
+    selectedName.textContent =
+        selectedPlayerName;
+
+    selectedId.textContent =
+        playerId;
+
+    replyInput.disabled = false;
+    replyBtn.disabled = false;
+
+    renderPlayers();
+
+    adminBody.classList.add("chatOpen");
+
+    startChatListener(playerId);
+
+    startBanListener(playerId);
+
+    replyInput.focus();
+}
+
+
+function startChatListener(playerId){
+
+    if(unsubscribeChat){
+        unsubscribeChat();
+    }
+
+    const q =
+        query(
+            supportRef,
+            where(
+                "playerId",
+                "==",
+                playerId
+            )
+        );
+
+    unsubscribeChat = onSnapshot(
+        q,
+        snapshot=>{
+
+            const messages = [];
+
+            snapshot.forEach(
+                item=>{
+                    messages.push({
+                        id:item.id,
+                        ...item.data()
+                    });
+                }
+            );
+
+            messages.sort(
+                (a,b)=>
+                    getMillis(a.createdAt) -
+                    getMillis(b.createdAt)
+            );
+
+            renderChat(messages);
+        },
+        error=>{
+            console.error(error);
+
+            showStatus(
+                "❌ Lỗi tải chat",
+                "error"
+            );
+        }
+    );
+}
+
+
+function renderChat(messages){
+
+    if(messages.length === 0){
+
+        chatMessages.innerHTML = `
+            <div class="emptyChat">
+                <div class="emptyIcon">💬</div>
+                Chưa có tin nhắn
+            </div>
+        `;
+
+        return;
+    }
+
+    chatMessages.innerHTML =
+        messages.map(
+            message=>{
+
+                const isAdmin =
+                    message.sender === "admin";
+
+                const type =
+                    isAdmin
+                    ? "admin"
+                    : "player";
+
+                const sender =
+                    isAdmin
+                    ? "🤖 ADMIN"
+                    : "👤 " +
+                      escapeHTML(
+                          message.playerName ||
+                          "NGƯỜI CHƠI"
+                      );
+
+                return `
+                    <div class="messageRow ${type}">
+
+                        <div class="messageBubble">
+
+                            <div class="messageSender">
+                                ${sender}
+                            </div>
+
+                            <div class="messageText">
+                                ${escapeHTML(
+                                    message.text || ""
+                                )}
+                            </div>
+
+                            <div class="messageTime">
+                                ${formatTime(
+                                    message.createdAt
+                                )}
+                            </div>
+
+                        </div>
+
+                    </div>
+                `;
+            }
+        ).join("");
+
+    requestAnimationFrame(
+        ()=>{
+            chatMessages.scrollTop =
+                chatMessages.scrollHeight;
+        }
+    );
+}
+
+
+/* ==========================================
+   BAN REALTIME
+========================================== */
+
+function startBanListener(playerId){
+
+    if(unsubscribeBan){
+        unsubscribeBan();
+    }
+
+    clearInterval(banTimer);
+
+    currentBanUntil = 0;
+
+    const banDoc =
+        doc(
+            db,
+            "chatBans",
+            playerId
+        );
+
+    unsubscribeBan =
+        onSnapshot(
+            banDoc,
+            snapshot=>{
+
+                if(!snapshot.exists()){
+
+                    currentBanUntil = 0;
+
+                    updateBanUI();
+
+                    return;
+                }
+
+                const data =
+                    snapshot.data();
+
+                currentBanUntil =
+                    Number(
+                        data.until || 0
+                    );
+
+                updateBanUI();
+            },
+            error=>{
+                console.error(error);
+            }
+        );
+}
+
+
+function updateBanUI(){
+
+    clearInterval(banTimer);
+
+    function tick(){
+
+        if(!currentBanUntil){
+
+            banStatusText.textContent = "";
+
+            return;
+        }
+
+        const remain =
+            currentBanUntil -
+            Date.now();
+
+        if(remain <= 0){
+
+            currentBanUntil = 0;
+
+            banStatusText.textContent =
+                "";
+
+            clearInterval(banTimer);
+
+            return;
+        }
+
+        const seconds =
+            Math.ceil(remain / 1000);
+
+        banStatusText.textContent =
+            "🔒 ĐANG CẤM CHAT: " +
+            seconds +
+            " GIÂY";
+    }
+
+    tick();
+
+    banTimer =
+        setInterval(
+            tick,
+            500
+        );
+}
+
+
+/* ==========================================
+   ADMIN COMMANDS
+========================================== */
+
+async function executeCommand(command){
+
+    if(!selectedPlayerId){
+
+        showStatus(
+            "⚠️ Hãy chọn người chơi",
+            "error"
+        );
+
+        return;
+    }
+
+    let duration = 0;
+
+    if(command === "/10s"){
+        duration = 10 * 1000;
+    }
+
+    if(command === "/cam"){
+        duration = 60 * 1000;
+    }
+
+    if(duration <= 0){
+        return false;
+    }
+
+    const until =
+        Date.now() + duration;
+
+    try{
+
+        /*
+           LƯU TRẠNG THÁI CẤM VÀO FIREBASE.
+
+           Lệnh KHÔNG được add vào
+           supportMessages.
+        */
+
+        await setDoc(
+            doc(
+                db,
+                "chatBans",
+                selectedPlayerId
+            ),
+            {
+                playerId:
+                    selectedPlayerId,
+
+                until:until,
+
+                duration:duration,
+
+                updatedAt:
+                    serverTimestamp()
+            }
+        );
+
+        currentBanUntil = until;
+
+        updateBanUI();
+
+        showStatus(
+            command === "/10s"
+            ? "🔒 Đã cấm chat 10 giây"
+            : "🔒 Đã cấm chat 1 phút",
+            "ok"
+        );
+
+        return true;
+
+    }catch(error){
+
+        console.error(error);
+
+        showStatus(
+            "❌ Không thể cấm chat",
+            "error"
+        );
+
+        return true;
+    }
+}
+
+
+/* ==========================================
+   SEND
+========================================== */
+
+async function sendReply(){
+
+    if(!selectedPlayerId){
+        return;
+    }
+
+    const text =
+        replyInput.value.trim();
+
+    if(!text){
+        return;
+    }
+
+    /*
+       LỆNH CHỈ ADMIN DÙNG.
+       Không gửi lệnh vào chat.
+    */
+
+    if(
+        text === "/10s" ||
+        text === "/cam"
+    ){
+
+        replyInput.value = "";
+
+        await executeCommand(text);
+
+        return;
+    }
+
+
+    replyBtn.disabled = true;
+
+    try{
+
+        await addDoc(
+            supportRef,
+            {
+                playerId:
+                    selectedPlayerId,
+
+                playerName:
+                    selectedPlayerName
+                    .substring(0,30),
+
+                text:
+                    text.substring(0,500),
+
+                sender:
+                    "admin",
+
+                createdAt:
+                    serverTimestamp()
+            }
+        );
+
+        replyInput.value = "";
+
+        showStatus(
+            "✅ Đã gửi trả lời",
+            "ok"
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+        showStatus(
+            "❌ Gửi thất bại",
+            "error"
+        );
+
+    }finally{
+
+        replyBtn.disabled = false;
+
+        replyInput.focus();
+    }
+}
+
+
+replyBtn.addEventListener(
+    "click",
+    sendReply
+);
+
+replyInput.addEventListener(
+    "keydown",
+    e=>{
+
+        if(e.key === "Enter"){
+
+            e.preventDefault();
+
+            sendReply();
+        }
+    }
+);
+
+
+playerSearch.addEventListener(
+    "input",
+    renderPlayers
+);
+
+
+mobileBack.addEventListener(
+    "click",
+    ()=>{
+
+        adminBody.classList.remove(
+            "chatOpen"
+        );
+
+        if(unsubscribeChat){
+            unsubscribeChat();
+            unsubscribeChat = null;
+        }
+
+        if(unsubscribeBan){
+            unsubscribeBan();
+            unsubscribeBan = null;
+        }
+
+        clearInterval(banTimer);
+
+        selectedPlayerId = null;
+        selectedPlayerName = "";
+
+        selectedName.textContent =
+            "Chưa chọn người chơi";
+
+        selectedId.textContent = "";
+
+        banStatusText.textContent = "";
+
+        replyInput.value = "";
+        replyInput.disabled = true;
+        replyBtn.disabled = true;
+
+        renderPlayers();
+    }
+);
+
+
+if(
+    sessionStorage.getItem(
+        LOGIN_KEY
+    ) === "true"
+){
+    showAdmin();
+}
+
+</script>
+
+</body>
+</html>
